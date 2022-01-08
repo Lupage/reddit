@@ -14,7 +14,7 @@ def get_reddit(subreddit, limit, sort_by):
 	url = ["https://www.reddit.com"+str(element['data']['permalink']) for element in r]
 	results = list(zip(title, post, comments, score, url))
 	df = pd.DataFrame(results)
-	df.columns = ["Title", "Post", "Upvotes", "Score", "URL"]
+	df.columns = ["Title", "Post", "Number of comments", "Upvotes", "URL"]
 	df.sort_values(by=sort_by, ascending=False, inplace=True)
 	df = df.reset_index(drop=True)
 	df.index = df.index + 1
@@ -25,7 +25,7 @@ st.header("***Reddit Scraper***", anchor=None)
 with st.form(key='my_form'):
 	subreddit = st.text_input(label='Subreddit')
 	limit = st.text_input(label='Limit: 1-100')
-	sort_by = st.selectbox("Sort By", ("Upvotes", "Score"))
+	sort_by = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
 	submit_button = st.form_submit_button(label='Submit')
 
 if submit_button:

@@ -10,9 +10,9 @@ def get_reddit(subreddit, limit, sort_by):
 	title = [element['data']['title'] for element in r]
 	post = [element['data']['selftext'].replace("\n", " ") for element in r]
 	comments = [element['data']['num_comments'] for element in r]
-	score = [element['data']['score'] for element in r]
+	upvotes = [element['data']['score'] for element in r]
 	url = ["https://www.reddit.com"+str(element['data']['permalink']) for element in r]
-	results = list(zip(title, post, comments, score, url))
+	results = list(zip(title, post, comments, upvotes, url))
 	df = pd.DataFrame(results)
 	df.columns = ["Title", "Post", "Number of comments", "Upvotes", "URL"]
 	df.sort_values(by=sort_by, ascending=False, inplace=True)

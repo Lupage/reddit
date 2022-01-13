@@ -21,6 +21,10 @@ def get_reddit(subreddit, limit, sort_by):
 	return df
 
 st.set_page_config(layout="wide", page_title="Reddit Scraper")
+col1, col2 = st.columns(2)
+col1.header("***Reddit Scraper***", anchor=None)
+col2.subheader("An App by Francis Angelo Reyes of [Lupage Digital](https://www.lupagedigital.com/?utm_source=streamlit&utm_medium=referral&utm_campaign=reddit)")
+
 st.header("***Reddit Scraper***", anchor=None)
 with st.form(key='my_form'):
 	subreddit = st.text_input(label='Subreddit')

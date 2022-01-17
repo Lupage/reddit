@@ -44,14 +44,14 @@ col1.header("***Reddit Scraper***", anchor=None)
 col2.subheader("An App by Francis Angelo Reyes of [Lupage Digital](https://www.lupagedigital.com/?utm_source=streamlit&utm_medium=referral&utm_campaign=reddit)")
 
 with st.form(key='my_form'):
-	subreddit = st.text_input(label='Subreddit')
+	subreddit = st.text_input(label='Subreddit. The word after "r/". For example, r/playstation is playstation')
 	limit = st.text_input(label='Limit: 1-100')
 	sort_by = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
 	submit_button_one = st.form_submit_button(label='Submit')
 
 st.header("***Reddit Search Scraper***", anchor=None)
 with st.form(key='my_forms'):
-	subreddit = st.text_input(label='Subreddit')
+	subreddit = st.text_input(label='Subreddit. The word after "r/". For example, r/playstation is playstation')
 	search_query = st.text_input(label='Search query').replace(" ","%20")
 	limit = st.text_input(label='Limit: 1-100')
 	sort_by = st.selectbox("Sort By", ("Number of comments", "Upvotes"))

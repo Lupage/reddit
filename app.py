@@ -21,7 +21,7 @@ def get_reddit(subreddit,limit,sort_by):
 	return df
 
 def get_search(subreddit,limit,sort_by):
-	base_url = f'https://www.reddit.com/r/{subreddit}/search.json?q={search_query}&restrict_sr=on&limit=1{limit}'
+	base_url = f'https://www.reddit.com/r/{subreddit}/search.json?q={search_query}&restrict_sr=on&limit={limit}'
 	request = requests.get(base_url, headers = {'User-agent': 'yourbot'})
 	r = request.json()["data"]["children"]
 	title = [element['data']['title'] for element in r]

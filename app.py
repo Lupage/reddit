@@ -3,8 +3,8 @@ import pandas as pd
 import requests
 import streamlit as st
 
-def get_reddit(subreddit,limit,sort_by):
-	base_url = f'https://www.reddit.com/r/{subreddit}.json?limit={limit}'
+def get_reddit(subreddit,sort_by):
+	base_url = f'https://www.reddit.com/r/{subreddit}.json?limit=100'
 	request = requests.get(base_url, headers = {'User-agent': 'yourbot'})
 	r = request.json()['data']['children']
 	title = [element['data']['title'] for element in r]
@@ -20,8 +20,8 @@ def get_reddit(subreddit,limit,sort_by):
 	df.index = df.index + 1
 	return df
 
-def get_search(subreddit,limit,sort_by):
-	base_url = f'https://www.reddit.com/r/{subreddit}/search.json?q={search_query}&restrict_sr=on&limit={limit}'
+def get_search(subreddit, search_query, sort_by):
+	base_url = f'https://www.reddit.com/r/{subreddit}/search.json?q={search_query}&restrict_sr=on&limit=100'
 	request = requests.get(base_url, headers = {'User-agent': 'yourbot'})
 	r = request.json()["data"]["children"]
 	title = [element['data']['title'] for element in r]
@@ -39,44 +39,45 @@ def get_search(subreddit,limit,sort_by):
 
 st.set_page_config(layout="wide", page_title="Reddit Scraper")
 
-col1, col2 = st.columns(2)
-col1.header("***Reddit Scraper***", anchor=None)
-col2.subheader("An App by Francis Angelo Reyes of [Lupage Digital](https://www.lupagedigital.com/?utm_source=streamlit&utm_medium=referral&utm_campaign=reddit)")
+st.header("An App by Francis Angelo Reyes of [Lupage Digital](https://www.lupagedigital.com/?utm_source=streamlit&utm_medium=referral&utm_campaign=reddit)")
 
-with st.form(key='my_form'):
-	subreddit = st.text_input(label='Subreddit. The word after "r/". For example, r/playstation is playstation')
-	limit = st.text_input(label='Limit: 1-100')
-	sort_by = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
-	submit_button_one = st.form_submit_button(label='Submit')
+col_one, col_two = st.columns(2)
 
-st.header("***Reddit Search Scraper***", anchor=None)
-with st.form(key='my_forms'):
-	subreddit = st.text_input(label='Subreddit. The word after "r/". For example, r/playstation is playstation')
-	search_query = st.text_input(label='Search query').replace(" ","%20")
-	limit = st.text_input(label='Limit: 1-100')
-	sort_by = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
-	submit_button_two = st.form_submit_button(label='Submit')
+with col_one:
+	st.subheader("***Reddit Posts Scraper***", anchor=None)
+	with st.form(key='my_form'):
+		subreddit = st.text_input(label='Subreddit: The word after r/. For example, r/playstation is playstation')
+		sort_by = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
+		submit_button_one = st.form_submit_button(label='Submit')
+
+with col_two:
+	st.subheader("***Reddit Search Scraper***", anchor=None)
+	with st.form(key='my_forms'):
+		subreddit = st.text_input(label='Subreddit: The word after r/. For example, r/playstation is playstation')
+		search_query = st.text_input(label='Search query').replace(" ","%20")
+		sort_by = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
+		submit_button_two = st.form_submit_button(label='Submit')
 
 if submit_button_one:
 	if len(subreddit) == 0:
 		st.warning("Please enter a subreddit")		
 	else:
-		df = get_reddit(subreddit, limit, sort_by)
-		st.table(df)
+		df = get_reddit(subreddit, sort_by)
 		csv = df.to_csv()
 		b64 = base64.b64encode(csv.encode()).decode()
 		st.markdown('### **⬇️ Download output CSV File **')
 		href = f"""<a href="data:file/csv;base64,{b64}">Download CSV File</a> (Right-click and save as "filename.csv". Don't left-click.)"""
 		st.markdown(href, unsafe_allow_html=True)
+		st.table(df)
 
 if submit_button_two:
 	if len(subreddit) == 0:
 		st.warning("Please enter a subreddit")		
 	else:
-		df = get_search(subreddit, limit, sort_by)
-		st.table(df)
+		df = get_search(subreddit, search_query, sort_by)
 		csv = df.to_csv()
 		b64 = base64.b64encode(csv.encode()).decode()
 		st.markdown('### **⬇️ Download output CSV File **')
 		href = f"""<a href="data:file/csv;base64,{b64}">Download CSV File</a> (Right-click and save as "filename.csv". Don't left-click.)"""
 		st.markdown(href, unsafe_allow_html=True)
+		st.table(df)

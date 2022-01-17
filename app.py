@@ -46,23 +46,23 @@ col_one, col_two = st.columns(2)
 with col_one:
 	st.subheader("***Reddit Posts Scraper***", anchor=None)
 	with st.form(key='my_form'):
-		subreddit = st.text_input(label='Subreddit: The word after r/. For example, r/playstation is playstation')
-		sort_by = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
-		submit_button_one = st.form_submit_button(label='Submit')
+		subreddit_a = st.text_input(value="playstation", label='Subreddit: The word after r/. For example, r/playstation is playstation')
+		sort_by_a = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
+		submit_button_a = st.form_submit_button(label='Submit')
 
 with col_two:
 	st.subheader("***Reddit Search Scraper***", anchor=None)
 	with st.form(key='my_forms'):
-		subreddit = st.text_input(label='Subreddit: The word after r/. For example, r/playstation is playstation')
-		search_query = st.text_input(label='Search query').replace(" ","%20")
-		sort_by = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
-		submit_button_two = st.form_submit_button(label='Submit')
+		subreddit_b = st.text_input(value="playstation", label='Subreddit: The word after r/. For example, r/playstation is playstation')
+		search_query = st.text_input(value="god of war", label='Search query').replace(" ","%20")
+		sort_by_b = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
+		submit_button_b = st.form_submit_button(label='Submit')
 
-if submit_button_one:
-	if len(subreddit) == 0:
+if submit_button_a:
+	if len(subreddit_a) == 0:
 		st.warning("Please enter a subreddit")		
 	else:
-		df = get_reddit(subreddit, sort_by)
+		df = get_reddit(subreddit_a, sort_by_a)
 		csv = df.to_csv()
 		b64 = base64.b64encode(csv.encode()).decode()
 		st.markdown('### **⬇️ Download output CSV File **')
@@ -70,11 +70,13 @@ if submit_button_one:
 		st.markdown(href, unsafe_allow_html=True)
 		st.table(df)
 
-if submit_button_two:
-	if len(subreddit) == 0:
-		st.warning("Please enter a subreddit")		
+if submit_button_b:
+	if len(subreddit_b) == 0:
+		st.warning("Please enter a subreddit")
+	elif len(search_query) == 0:
+		st.warning("Please enter a search query")
 	else:
-		df = get_search(subreddit, search_query, sort_by)
+		df = get_search(subreddit_b, search_query, sort_by_b)
 		csv = df.to_csv()
 		b64 = base64.b64encode(csv.encode()).decode()
 		st.markdown('### **⬇️ Download output CSV File **')

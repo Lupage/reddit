@@ -74,25 +74,10 @@ if submit_button:
 		st.warning("Please enter a search query or subreddit")		
 	elif len(search_query) > 0 and len(subreddit) == 0:
 		df = get_reddit_search(search_query, sort_by)
-		csv = df.to_csv()
-		b64 = base64.b64encode(csv.encode()).decode()
-		st.markdown('### **⬇️ Download output CSV File **')
-		href = f"""<a href="data:file/csv;base64,{b64}">Download CSV File</a> (Right-click and save as "filename.csv". Don't left-click.)"""
-		st.markdown(href, unsafe_allow_html=True)
 		st.table(df)
 	elif len(subreddit) > 0 and len(search_query)== 0:
 		df = get_subreddit(subreddit, sort_by)
-		csv = df.to_csv()
-		b64 = base64.b64encode(csv.encode()).decode()
-		st.markdown('### **⬇️ Download output CSV File **')
-		href = f"""<a href="data:file/csv;base64,{b64}">Download CSV File</a> (Right-click and save as "filename.csv". Don't left-click.)"""
-		st.markdown(href, unsafe_allow_html=True)
 		st.table(df)
 	else:
 		df = get_subreddit_search(subreddit, search_query, sort_by)
-		csv = df.to_csv()
-		b64 = base64.b64encode(csv.encode()).decode()
-		st.markdown('### **⬇️ Download output CSV File **')
-		href = f"""<a href="data:file/csv;base64,{b64}">Download CSV File</a> (Right-click and save as "filename.csv". Don't left-click.)"""
-		st.markdown(href, unsafe_allow_html=True)
 		st.table(df)

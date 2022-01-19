@@ -67,23 +67,23 @@ col_one, col_two = st.columns(2)
 with col_one:
 	st.subheader("***Reddit Search ***", anchor=None)
 	with st.form(key='Reddit posts'):
-		search_query = st.text_input(value="covid 19", label='Search query').replace(" ","%20")
-		sort_by = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
+		search_query_a = st.text_input(value="covid 19", label='Search query').replace(" ","%20")
+		sort_by_a = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
 		submit_button_a = st.form_submit_button(label='Submit')
 
 with col_two:
 	st.subheader("***Subreddit Search***", anchor=None)
 	with st.form(key='Subreddit search'):
 		subreddit = st.text_input(value="playstation", label='Subreddit: The word after r/. For example, r/playstation is playstation')
-		search_query = st.text_input(value="god of war", label='Search query. If empty, it will still scrape subreddit').replace(" ","%20")
-		sort_by = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
+		search_query_b = st.text_input(value="god of war", label='Search query. If empty, it will still scrape subreddit').replace(" ","%20")
+		sort_by_b = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
 		submit_button_b = st.form_submit_button(label='Submit')
 
 if submit_button_a:
-	if len(search_query) == 0:
+	if len(search_query_a) == 0:
 		st.warning("Please enter a search query")		
 	else:
-		df = get_reddit_search(search_query, sort_by)
+		df = get_reddit_search(search_query_a, sort_by_a)
 		csv = df.to_csv()
 		b64 = base64.b64encode(csv.encode()).decode()
 		st.markdown('### **⬇️ Download output CSV File **')
@@ -94,8 +94,8 @@ if submit_button_a:
 if submit_button_b:
 	if len(subreddit) == 0:
 		st.warning("Please enter a subreddit")
-	elif len(search_query) == 0:
-		df = get_subreddit(subreddit, sort_by)
+	elif len(search_query_b) == 0:
+		df = get_subreddit(subreddit, sort_by_b)
 		csv = df.to_csv()
 		b64 = base64.b64encode(csv.encode()).decode()
 		st.markdown('### **⬇️ Download output CSV File **')

@@ -103,7 +103,7 @@ if submit_button_b:
 		st.markdown(href, unsafe_allow_html=True)
 		st.table(df)
 	else:
-		df = get_subreddit_search(subreddit, search_query, sort_by)
+		df = get_subreddit_search(subreddit, search_query_b, sort_by)
 		csv = df.to_csv()
 		b64 = base64.b64encode(csv.encode()).decode()
 		st.markdown('### **⬇️ Download output CSV File **')

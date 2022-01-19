@@ -3,39 +3,42 @@ import pandas as pd
 import requests
 import streamlit as st
 
-def get_reddit(subreddit,sort_by):
-	base_url = f'https://www.reddit.com/r/{subreddit}.json?limit=100'
-	request = requests.get(base_url, headers = {'User-agent': 'yourbot'})
-	r = request.json()['data']['children']
-	title = [element['data']['title'] for element in r]
-	post = [element['data']['selftext'].replace("\n", " ") for element in r]
-	comments = [element['data']['num_comments'] for element in r]
-	score = [element['data']['score'] for element in r]
-	url = ["https://www.reddit.com"+str(element['data']['permalink']) for element in r]
-	results = list(zip(title, post, comments, score, url))
-	df = pd.DataFrame(results)
-	df.columns = ["Title", "Post", "Number of comments", "Upvotes", "URL"]
-	df.sort_values(by=sort_by, ascending=False, inplace=True)
-	df = df.reset_index(drop=True)
-	df.index = df.index + 1
-	return df
-
-def get_search(subreddit, search_query, sort_by):
-	base_url = f'https://www.reddit.com/r/{subreddit}/search.json?q={search_query}&restrict_sr=on&limit=100'
+def get_reddit_search(search_query, sort_by):
+	base_url = f'https://www.reddit.com/search.json?q={search_query}&limit=100'
 	request = requests.get(base_url, headers = {'User-agent': 'yourbot'})
 	r = request.json()["data"]["children"]
+	subreddit_name = ["r/"+str(element['data']['subreddit']) for element in r]
 	title = [element['data']['title'] for element in r]
 	post = [element['data']['selftext'].replace("\n", " ") for element in r]
 	comments = [element['data']['num_comments'] for element in r]
 	upvotes = [element['data']['score'] for element in r]
 	url = ["https://www.reddit.com"+str(element['data']['permalink']) for element in r]
-	results = list(zip(title, post, comments, upvotes, url))
+	results = list(zip(subreddit_name, title, post, comments, upvotes, url))
 	df = pd.DataFrame(results)
-	df.columns = ["Title", "Post", "Number of comments", "Upvotes", "URL"]
+	df.columns = ["Subreddit", "Title", "Post", "Number of comments", "Upvotes", "URL"]
 	df.sort_values(by=sort_by, ascending=False, inplace=True)
 	df = df.reset_index(drop=True)
 	df.index = df.index + 1
 	return df
+
+def get_subreddit_search(subreddit, search_query, sort_by):
+	base_url = f'https://www.reddit.com/r/{subreddit}/search.json?q={search_query}&restrict_sr=on&limit=100'
+	request = requests.get(base_url, headers = {'User-agent': 'yourbot'})
+	r = request.json()["data"]["children"]
+	subreddit_name = ["r/"+str(element['data']['subreddit']) for element in r]
+	title = [element['data']['title'] for element in r]
+	post = [element['data']['selftext'].replace("\n", " ") for element in r]
+	comments = [element['data']['num_comments'] for element in r]
+	upvotes = [element['data']['score'] for element in r]
+	url = ["https://www.reddit.com"+str(element['data']['permalink']) for element in r]
+	results = list(zip(subreddit_name, title, post, comments, upvotes, url))
+	df = pd.DataFrame(results)
+	df.columns = ["Subreddit", "Title", "Post", "Number of comments", "Upvotes", "URL"]
+	df.sort_values(by=sort_by, ascending=False, inplace=True)
+	df = df.reset_index(drop=True)
+	df.index = df.index + 1
+	return df
+
 
 st.set_page_config(layout="wide", page_title="Reddit Scraper")
 
@@ -44,25 +47,25 @@ st.header("An App by Francis Angelo Reyes of [Lupage Digital](https://www.lupage
 col_one, col_two = st.columns(2)
 
 with col_one:
-	st.subheader("***Reddit Posts Scraper***", anchor=None)
-	with st.form(key='my_form'):
-		subreddit_a = st.text_input(value="playstation", label='Subreddit: The word after r/. For example, r/playstation is playstation')
+	st.subheader("***Reddit Search ***", anchor=None)
+	with st.form(key='Reddit posts'):
+		search_query_a = st.text_input(value="covid 19", label='Search query').replace(" ","%20")
 		sort_by_a = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
 		submit_button_a = st.form_submit_button(label='Submit')
 
 with col_two:
-	st.subheader("***Reddit Search Scraper***", anchor=None)
-	with st.form(key='my_forms'):
-		subreddit_b = st.text_input(value="playstation", label='Subreddit: The word after r/. For example, r/playstation is playstation')
-		search_query = st.text_input(value="god of war", label='Search query').replace(" ","%20")
+	st.subheader("***Subreddit Search***", anchor=None)
+	with st.form(key='Subreddit search'):
+		subreddit = st.text_input(value="playstation", label='Subreddit: The word after r/. For example, r/playstation is playstation')
+		search_query_b = st.text_input(value="god of war", label='Search query').replace(" ","%20")
 		sort_by_b = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
 		submit_button_b = st.form_submit_button(label='Submit')
 
 if submit_button_a:
-	if len(subreddit_a) == 0:
-		st.warning("Please enter a subreddit")		
+	if len(search_query_a) == 0:
+		st.warning("Please enter a search query")		
 	else:
-		df = get_reddit(subreddit_a, sort_by_a)
+		df = get_reddit_search(search_query_a, sort_by_b)
 		csv = df.to_csv()
 		b64 = base64.b64encode(csv.encode()).decode()
 		st.markdown('### **⬇️ Download output CSV File **')
@@ -71,12 +74,10 @@ if submit_button_a:
 		st.table(df)
 
 if submit_button_b:
-	if len(subreddit_b) == 0:
-		st.warning("Please enter a subreddit")
-	elif len(search_query) == 0:
-		st.warning("Please enter a search query")
+	if len(subreddit) == 0:
+		st.warning("Please enter a subreddit")		
 	else:
-		df = get_search(subreddit_b, search_query, sort_by_b)
+		df = get_subreddit_search(subreddit, search_query_b, sort_by_b)
 		csv = df.to_csv()
 		b64 = base64.b64encode(csv.encode()).decode()
 		st.markdown('### **⬇️ Download output CSV File **')

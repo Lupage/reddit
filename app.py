@@ -64,7 +64,7 @@ st.header("An App by Francis Angelo Reyes of [Lupage Digital](https://www.lupage
 st.subheader("***Reddit Scraper***", anchor=None)
 
 with st.form(key='Subreddit search'):
-	search_query = st.text_input(value="covid 19", label='Search query. If empty, it scrapes subreddit').replace(" ","%20")
+	search_query = st.text_input(value="covid 19", label='Type in your search query. If empty, it scrapes the subreddit').replace(" ","%20")
 	subreddit = st.text_input(value="Philippines", label='Subreddit: The word after r/. For example, r/Philippines is Philippines. If empty, it scrapes entire Reddit')
 	sort_by = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
 	submit_button = st.form_submit_button(label='Submit')

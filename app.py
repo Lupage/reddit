@@ -64,9 +64,13 @@ st.header("An App by Francis Angelo Reyes of [Lupage Digital](https://www.lupage
 st.subheader("***Reddit Scraper***", anchor=None)
 
 with st.form(key='Subreddit search'):
-	search_query = st.text_input(value="covid 19", label='Type in your search query. If empty, it scrapes the subreddit').replace(" ","%20")
-	subreddit = st.text_input(value="Philippines", label='Subreddit: The word after r/. For example, r/Philippines is Philippines. If empty, it scrapes entire Reddit')
-	sort_by = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
+	col1, col2 = st.columns(2)
+	with col1:
+		search_query = st.text_input(value="god of war", label='Search query. If empty, it scrapes a subreddit').replace(" ","%20")
+		subreddit = st.text_input(value="Playstation", label='Subreddit. For example, r/Playstation is Playstation. If empty, it scrapes entire Reddit')
+	with col2:	
+		sort_by = st.selectbox("Sort By", ("Number of comments", "Upvotes"))
+	
 	submit_button = st.form_submit_button(label='Submit')
 
 if submit_button:
@@ -74,10 +78,25 @@ if submit_button:
 		st.warning("Please enter a search query or subreddit")		
 	elif len(search_query) > 0 and len(subreddit) == 0:
 		df = get_reddit_search(search_query, sort_by)
+		csv = df.to_csv()
+		b64 = base64.b64encode(csv.encode()).decode()
+		st.markdown('### **⬇️ Download output CSV File **')
+		href = f"""<a href="data:file/csv;base64,{b64}">Download CSV File</a> (Right-click and save as "filename.csv". Don't left-click.)"""
+		st.markdown(href, unsafe_allow_html=True)
 		st.table(df)
 	elif len(subreddit) > 0 and len(search_query)== 0:
 		df = get_subreddit(subreddit, sort_by)
+		csv = df.to_csv()
+		b64 = base64.b64encode(csv.encode()).decode()
+		st.markdown('### **⬇️ Download output CSV File **')
+		href = f"""<a href="data:file/csv;base64,{b64}">Download CSV File</a> (Right-click and save as "filename.csv". Don't left-click.)"""
+		st.markdown(href, unsafe_allow_html=True)
 		st.table(df)
 	else:
 		df = get_subreddit_search(subreddit, search_query, sort_by)
+		csv = df.to_csv()
+		b64 = base64.b64encode(csv.encode()).decode()
+		st.markdown('### **⬇️ Download output CSV File **')
+		href = f"""<a href="data:file/csv;base64,{b64}">Download CSV File</a> (Right-click and save as "filename.csv". Don't left-click.)"""
+		st.markdown(href, unsafe_allow_html=True)
 		st.table(df)
